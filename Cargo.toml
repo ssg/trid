@@ -1,6 +1,6 @@
 [package]
 name = "trid"
-version = "0.1.0-alpha"
+version = "0.1.1-alpha"
 description = "Turkish citizenship ID number type"
 readme = "README.md"
 homepage = "https://github.com/ssg/trid"
