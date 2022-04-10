@@ -5,3 +5,4 @@ description = "Turkish citizenship ID number type"
 readme = "README.md"
 homepage = "https://github.com/ssg/trid"
 authors = ["Sedat Kapanoglu <sedat@kapanoglu.com>"]
+license = "Apache-2.0"
