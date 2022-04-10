@@ -1,7 +1,6 @@
-# trid - Turkish Citizenship ID Number crate for Rust
-This is my first Rust package derived from my [TurkishId](https://github.com/ssg/TurkishId) package in .NET.
-I'm trying to use existing code as an excuse to learn about Rust. Despite the tackling with many error
-messages, Rust has been extremely impressive so far. (How cool are doc-tests!?)
+# trid - Turkish Citizenship ID Number crate
+This is my first ever written Rust code derived from my own [TurkishId](https://github.com/ssg/TurkishId) package for .NET. I'm trying to use existing code as an excuse to learn about Rust. Despite constant tackling with 
+error messages, Rust has been extremely impressive so far. (How cool are doc-tests!?)
 
 # Usage
 First things first:
