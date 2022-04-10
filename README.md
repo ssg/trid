@@ -1,3 +1,4 @@
+[![Crates.io](https://img.shields.io/crates/v/trid)](https://crates.io/crates/trid)
 [![Build & Test](https://github.com/ssg/trid/actions/workflows/rust.yml/badge.svg)](https://github.com/ssg/trid/actions/workflows/rust.yml)
 
 # trid - Turkish Citizenship ID Number crate
