@@ -8,4 +8,4 @@ homepage = "https://github.com/ssg/trid"
 repository = "https://github.com/ssg/trid"
 authors = ["Sedat Kapanoglu <sedat@kapanoglu.com>"]
 license = "Apache-2.0"
-keywords = ["Turkish ID Number"]
+keywords = ["turkish", "turkey", "id", "number"]
