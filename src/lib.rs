@@ -61,7 +61,7 @@ pub fn is_valid(value: &str) -> bool {
     }
 
     let mut even_sum = 0;
-    for i in (1..9 as usize).step_by(2) {
+    for i in (1..9).step_by(2) {
         even_sum += digit(digits[i], &mut invalid);
         odd_sum += digit(digits[i + 1], &mut invalid);
     }
@@ -136,11 +136,11 @@ impl FromStr for TurkishId {
             return Err(TurkishIdError::InvalidLength);
         }
 
-        if !is_valid(&s) {
+        if !is_valid(s) {
             return Err(TurkishIdError::InvalidChecksum);
         }
 
-        Ok(Self::new(&s))
+        Ok(Self::new(s))
     }
 }
 
