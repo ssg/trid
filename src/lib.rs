@@ -1,4 +1,7 @@
 use std::convert::TryInto;
+use std::fmt::Display;
+use std::fmt::Error;
+use std::fmt::Formatter;
 use std::str;
 use std::str::FromStr;
 
@@ -94,9 +97,9 @@ fn digit(byte: u8, invalid: &mut bool) -> i32 {
     b
 }
 
-impl ToString for TurkishId {
-    fn to_string(&self) -> String {
-        str::from_utf8(&self.0).expect("Invalid value").to_string()
+impl Display for TurkishId {
+    fn fmt(&self, f: &mut Formatter) -> Result<(), Error> {
+        write!(f, "{}", str::from_utf8(&self.0).unwrap())
     }
 }
 
