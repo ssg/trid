@@ -1,6 +1,8 @@
 extern crate trid;
+use std::str::FromStr;
+use trid::TurkishId;
 
-const VALID_NUMBERS : &[&'static str] = &[
+static VALID_NUMBERS: &[&'static str] = &[
     "19191919190",
     "76558242278",
     "80476431508",
@@ -15,7 +17,7 @@ const VALID_NUMBERS : &[&'static str] = &[
     "64404737702",
 ];
 
-const INVALID_NUMBERS : &[&'static str] = &[
+static INVALID_NUMBERS: &[&'static str] = &[
     "04948892948", // first digit zero
     "14948892946", // last digit INVALID
     "14948892937", // last second digit INVALID
@@ -50,15 +52,22 @@ const INVALID_NUMBERS : &[&'static str] = &[
 ];
 
 #[test]
-fn valid_numbers_return_true() {
+fn valid_numbers() {
     for number in VALID_NUMBERS.iter() {
-        assert!(trid::is_valid(number));
+        assert!(matches!(TurkishId::from_str(number), Ok(_)));
     }
 }
 
 #[test]
-fn invalid_numbers_return_false() {
+fn invalid_numbers() {
     for number in INVALID_NUMBERS.iter() {
-        assert!(!trid::is_valid(number));
+        assert!(matches!(TurkishId::from_str(number), Err(_)));
+    }
+}
+
+#[test]
+fn display() {
+    for &number in VALID_NUMBERS.iter() {
+        assert_eq!(TurkishId::from_str(number).unwrap().to_string(), number);
     }
 }
