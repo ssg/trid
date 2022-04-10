@@ -1,8 +1,8 @@
+use std::convert::{TryFrom, TryInto};
 use std::str;
 use std::str::FromStr;
-use std::convert::{TryInto, TryFrom};
 
-pub const TURKISHID_LENGTH : usize = 11;
+pub const TURKISHID_LENGTH: usize = 11;
 pub type IdInner = [u8; TURKISHID_LENGTH];
 
 /// Turkish citizenship ID number.
@@ -74,7 +74,7 @@ impl std::fmt::Display for TurkishId {
 impl TryFrom<IdInner> for TurkishId {
     type Error = TurkishIdError;
 
-    fn try_from(id: IdInner) -> Result<Self, Self::Error> { 
+    fn try_from(id: IdInner) -> Result<Self, Self::Error> {
         if checksum(id) {
             Ok(TurkishId { id })
         } else {
@@ -86,7 +86,7 @@ impl TryFrom<IdInner> for TurkishId {
 impl TryFrom<&str> for TurkishId {
     type Error = TurkishIdError;
 
-    fn try_from(s: &str) -> Result<Self, Self::Error> { 
+    fn try_from(s: &str) -> Result<Self, Self::Error> {
         s.parse()
     }
 }
@@ -101,5 +101,5 @@ impl FromStr for TurkishId {
         };
 
         Self::try_from(array)
-   }
+    }
 }
