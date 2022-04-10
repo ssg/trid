@@ -1,0 +1,7 @@
+[package]
+name = "trid"
+version = "0.1.0-alpha"
+description = "Turkish citizenship ID number data type for Rust"
+readme = "README.md"
+homepage = "https://github.com/ssg/trid"
+authors = ["Sedat Kapanoglu <sedat@kapanoglu.com>"]
