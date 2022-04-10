@@ -1,6 +1,6 @@
 extern crate trid;
 
-const VALID_NUMBERS : &[&'static str] = &[
+const VALID_NUMBERS: &[&'static str] = &[
     "19191919190",
     "76558242278",
     "80476431508",
@@ -15,11 +15,10 @@ const VALID_NUMBERS : &[&'static str] = &[
     "64404737702",
 ];
 
-const INVALID_NUMBERS : &[&'static str] = &[
+const INVALID_NUMBERS: &[&'static str] = &[
     "04948892948", // first digit zero
     "14948892946", // last digit INVALID
     "14948892937", // last second digit INVALID
-
     // non numeric chars
     "A4948892948",
     "7B558242278",
@@ -32,7 +31,6 @@ const INVALID_NUMBERS : &[&'static str] = &[
     "93212606I04",
     "352014085J8",
     "3520140853K",
-
     // uneven length
     "7",
     "76",
@@ -43,7 +41,6 @@ const INVALID_NUMBERS : &[&'static str] = &[
     "765582422",
     "7655824227",
     "765582422781",
-
     // spaces
     " 765582422781",
     "765582422781 ",
