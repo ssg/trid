@@ -69,28 +69,31 @@ impl TurkishId {
 /// assert!(!trid::is_valid("06558242278"));
 /// ```
 pub fn is_valid(value: &str) -> bool {
-    let digits = value.as_bytes();
-    if digits.len() != TURKISHID_LENGTH {
+    if value.as_bytes().len() != TURKISHID_LENGTH {
         return false;
     }
 
-    let mut invalid = false;
-    let mut odd_sum = digit(digits[0], &mut invalid);
-    if invalid || odd_sum == 0 {
+    let mut digits = [0; TURKISHID_LENGTH];
+    for (i, byte) in value.as_bytes().iter().enumerate() {
+        match (*byte as char).to_digit(10) {
+            Some(digit) => digits[i] = digit.try_into().unwrap(),
+            None => return false,
+        };
+    }
+
+    let mut odd_sum = digits[0];
+    if odd_sum == 0 {
         return false;
     }
 
     let mut even_sum = 0;
     for i in (1..9 as usize).step_by(2) {
-        even_sum += digit(digits[i], &mut invalid);
-        odd_sum += digit(digits[i + 1], &mut invalid);
+        even_sum += digits[i];
+        odd_sum += digits[i + 1];
     }
 
-    let first_checksum = digit(digits[9], &mut invalid);
-    let final_checksum = digit(digits[10], &mut invalid);
-    if invalid {
-        return false;
-    }
+    let first_checksum = digits[9];
+    let final_checksum = digits[10];
 
     let computed_final = (odd_sum + even_sum + first_checksum) % 10;
     if computed_final != final_checksum {
@@ -103,15 +106,6 @@ pub fn is_valid(value: &str) -> bool {
     }
 
     computed_first == first_checksum
-}
-
-fn digit(byte: u8, invalid: &mut bool) -> i32 {
-    let b = (byte as i32) - ('0' as i32);
-    if b > 9 {
-        *invalid |= true;
-        return -1;
-    }
-    b
 }
 
 impl PartialEq for TurkishId {
