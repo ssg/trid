@@ -3,12 +3,6 @@ This is my first ever written Rust code derived from my own [TurkishId](https://
 error messages, Rust has been extremely impressive so far. (How cool are doc-tests!?)
 
 # Usage
-First things first:
-
-```
-cargo install trid
-```
-
 The package provides an `is_valid(value: &str)` function for validating ID numbers and a `TurkishId` 
 struct to encompass a Turkish citizenship ID number, so you don't need to validate it constantly.
 
