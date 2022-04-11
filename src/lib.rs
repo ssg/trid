@@ -1,5 +1,6 @@
 use std::{
     convert::TryInto,
+    error::Error,
     fmt::{Display, Formatter},
     str,
     str::FromStr,
@@ -20,6 +21,18 @@ pub enum TurkishIdError {
 }
 
 type Err = TurkishIdError;
+
+impl Display for Err {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Self::InvalidLength => write!(f, "invalid length"),
+            Self::InvalidDigit => write!(f, "invalid digit"),
+            Self::InvalidChecksum => write!(f, "invalid checksum"),
+        }
+    }
+}
+
+impl Error for Err {}
 
 impl TurkishId {
     fn new(value: &str) -> Self {
