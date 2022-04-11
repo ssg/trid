@@ -25,7 +25,7 @@ Try parsing a string into `TurkishId`:
 ```rust
 use trid::TurkishId;
 
-let turkish_id : TurkishId = "12345678901".parse()?;
+let id : TurkishId = "12345678901".parse()?;
 ```
 
 # License
