@@ -12,11 +12,14 @@ pub const LENGTH: usize = 11;
 pub struct TurkishId([u8; LENGTH]);
 
 /// Represents the parser error for a given Turkish citizenship ID number.
-#[derive(Debug, Eq, PartialEq, Hash, Copy, Clone)]
+#[derive(Debug, Eq, PartialEq)]
 pub enum TurkishIdError {
     InvalidLength,
+    InvalidDigit,
     InvalidChecksum,
 }
+
+type Err = TurkishIdError;
 
 impl TurkishId {
     fn new(value: &str) -> Self {
@@ -52,32 +55,40 @@ impl TurkishId {
 /// assert!(!trid::is_valid("06558242278"));
 /// ```
 pub fn is_valid(value: &str) -> bool {
-    let digits = value.as_bytes();
-    if digits.len() != LENGTH {
-        return false;
+    validate(value).is_ok()
+}
+
+macro_rules! next {
+    ($iter:ident) => {
+        $iter.next().flatten().ok_or(Err::InvalidDigit)
+    };
+}
+
+/// Internal function to validate a given Turkish ID number.
+fn validate(s: &str) -> Result<(), Err> {
+    if s.len() != LENGTH {
+        return Err(Err::InvalidLength);
     }
 
-    let mut invalid = false;
-    let mut odd_sum = digit(digits[0], &mut invalid);
-    if invalid || odd_sum == 0 {
-        return false;
+    let mut digits = s
+        .chars()
+        .map(|c| c.to_digit(10).map(|u| i32::try_from(u).ok()).flatten());
+    let mut odd_sum = next!(digits)?;
+    if odd_sum == 0 {
+        return Err(Err::InvalidDigit);
+    }
+    let mut even_sum = 0i32;
+    for _ in 0..4 {
+        even_sum += next!(digits)?;
+        odd_sum += next!(digits)?;
     }
 
-    let mut even_sum = 0;
-    for i in (1..9).step_by(2) {
-        even_sum += digit(digits[i], &mut invalid);
-        odd_sum += digit(digits[i + 1], &mut invalid);
-    }
-
-    let first_checksum = digit(digits[9], &mut invalid);
-    let final_checksum = digit(digits[10], &mut invalid);
-    if invalid {
-        return false;
-    }
+    let first_checksum = next!(digits)?;
+    let final_checksum = next!(digits)?;
 
     let computed_final = (odd_sum + even_sum + first_checksum) % 10;
     if computed_final != final_checksum {
-        return false;
+        return Err(Err::InvalidChecksum);
     }
 
     let mut computed_first = ((odd_sum * 7) - even_sum) % 10;
@@ -85,20 +96,15 @@ pub fn is_valid(value: &str) -> bool {
         computed_first += 10;
     }
 
-    computed_first == first_checksum
-}
-
-fn digit(byte: u8, invalid: &mut bool) -> i32 {
-    let b = (byte as i32) - ('0' as i32);
-    if b > 9 {
-        *invalid |= true;
-        return -1;
+    if computed_first != first_checksum {
+        return Err(Err::InvalidChecksum);
     }
-    b
+
+    Ok(())
 }
 
 impl Display for TurkishId {
-    fn fmt(&self, f: &mut Formatter) -> Result<(), Error> {
+    fn fmt(&self, f: &mut Formatter) -> Result<(), std::fmt::Error> {
         write!(f, "{}", str::from_utf8(&self.0).unwrap())
     }
 }
@@ -141,14 +147,7 @@ impl FromStr for TurkishId {
     /// assert_eq!(result, Err(trid::TurkishIdError::InvalidLength));
     /// ```
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        if s.len() != LENGTH {
-            return Err(TurkishIdError::InvalidLength);
-        }
-
-        if !is_valid(s) {
-            return Err(TurkishIdError::InvalidChecksum);
-        }
-
+        validate(&s)?;
         Ok(Self::new(s))
     }
 }
