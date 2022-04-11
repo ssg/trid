@@ -103,6 +103,12 @@ impl Display for TurkishId {
     }
 }
 
+impl From<&[u8; LENGTH]> for TurkishId {
+    fn from(value: &[u8; LENGTH]) -> Self {
+        TurkishId(value.to_owned())
+    }
+}
+
 impl FromStr for TurkishId {
     type Err = TurkishIdError;
 
