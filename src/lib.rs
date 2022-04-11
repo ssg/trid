@@ -85,7 +85,7 @@ fn validate(s: &str) -> Result<(), Err> {
 
     let mut digits = s
         .chars()
-        .map(|c| c.to_digit(10).map(|u| i32::try_from(u).ok()).flatten());
+        .map(|c| c.to_digit(10).and_then(|u| i32::try_from(u).ok()));
     let mut odd_sum = next!(digits)?;
     if odd_sum == 0 {
         return Err(Err::InvalidDigit);
@@ -160,7 +160,7 @@ impl FromStr for TurkishId {
     /// assert_eq!(result, Err(trid::TurkishIdError::InvalidLength));
     /// ```
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        validate(&s)?;
+        validate(s)?;
         Ok(Self::new(s))
     }
 }
