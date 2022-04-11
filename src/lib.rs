@@ -8,9 +8,11 @@ use std::{
 
 pub const LENGTH: usize = 11;
 
+type Bytes = [u8; LENGTH];
+
 /// Turkish citizenship ID number.
 #[derive(Debug, Eq, PartialEq, Copy, Clone)]
-pub struct TurkishId([u8; LENGTH]);
+pub struct TurkishId(Bytes);
 
 /// Represents the parser error for a given Turkish citizenship ID number.
 #[derive(Debug, Eq, PartialEq)]
@@ -33,17 +35,6 @@ impl Display for Err {
 }
 
 impl Error for Err {}
-
-impl TurkishId {
-    fn new(value: &str) -> Self {
-        TurkishId(
-            value
-                .as_bytes()
-                .try_into()
-                .expect("Internal error: incorrect length"),
-        )
-    }
-}
 
 /// Checks if the given string is a valid Turkish citizenship ID number.
 ///
@@ -122,9 +113,15 @@ impl Display for TurkishId {
     }
 }
 
-impl From<&[u8; LENGTH]> for TurkishId {
-    fn from(value: &[u8; LENGTH]) -> Self {
+impl From<&Bytes> for TurkishId {
+    fn from(value: &Bytes) -> Self {
         TurkishId(value.to_owned())
+    }
+}
+
+impl From<&[u8]> for TurkishId {
+    fn from(value: &[u8]) -> Self {
+        TurkishId(value.try_into().expect("Invalid borrow passed"))
     }
 }
 
@@ -161,7 +158,9 @@ impl FromStr for TurkishId {
     /// ```
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         validate(s)?;
-        Ok(Self::new(s))
+        Ok(s.as_bytes()
+            .try_into()
+            .expect("Internal error: validation should never fail"))
     }
 }
 
