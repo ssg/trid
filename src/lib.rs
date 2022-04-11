@@ -1,9 +1,9 @@
-use std::convert::TryInto;
-use std::fmt::Display;
-use std::fmt::Error;
-use std::fmt::Formatter;
-use std::str;
-use std::str::FromStr;
+use std::{
+    convert::TryInto,
+    fmt::{Display, Formatter},
+    str,
+    str::FromStr,
+};
 
 pub const LENGTH: usize = 11;
 
