@@ -172,35 +172,35 @@ mod tests {
         "64404737702",
     ];
 
-    const INVALID_NUMBERS: &[&str] = &[
-        "04948892948", // first digit zero
-        "14948892946", // last digit INVALID
-        "14948892937", // last second digit INVALID
+    const INVALID_NUMBERS: &[(&str, Err)] = &[
+        ("04948892948", Err::InvalidDigit),    // first digit zero
+        ("14948892946", Err::InvalidChecksum), // last checksum INVALID
+        ("14948892937", Err::InvalidChecksum), // first checksum INVALID
         // non numeric chars
-        "A4948892948",
-        "7B558242278",
-        "80C76431508",
-        "767D5508630",
-        "9079E350894",
-        "43473F24496",
-        "566733G2584",
-        "2926080H600",
-        "93212606I04",
-        "352014085J8",
-        "3520140853K",
-        // uneven length
-        "7",
-        "76",
-        "76558",
-        "765582",
-        "7655824",
-        "76558242",
-        "765582422",
-        "7655824227",
-        "765582422781",
+        ("A4948892948", Err::InvalidDigit),
+        ("7B558242278", Err::InvalidDigit),
+        ("80C76431508", Err::InvalidDigit),
+        ("767D5508630", Err::InvalidDigit),
+        ("9079E350894", Err::InvalidDigit),
+        ("43473F24496", Err::InvalidDigit),
+        ("566733G2584", Err::InvalidDigit),
+        ("2926080H600", Err::InvalidDigit),
+        ("93212606I04", Err::InvalidDigit),
+        ("352014085J8", Err::InvalidDigit),
+        ("3520140853K", Err::InvalidDigit),
         // spaces
-        " 765582422781",
-        "765582422781 ",
+        (" 7655824227", Err::InvalidDigit),
+        ("5582422781 ", Err::InvalidDigit),
+        // uneven length
+        ("7", Err::InvalidLength),
+        ("76", Err::InvalidLength),
+        ("76558", Err::InvalidLength),
+        ("765582", Err::InvalidLength),
+        ("7655824", Err::InvalidLength),
+        ("76558242", Err::InvalidLength),
+        ("765582422", Err::InvalidLength),
+        ("7655824227", Err::InvalidLength),
+        ("765582422781", Err::InvalidLength),
     ];
 
     #[test]
@@ -212,8 +212,15 @@ mod tests {
 
     #[test]
     fn is_valid_invalidnumbers_returns_false() {
-        for number in INVALID_NUMBERS {
+        for (number, _) in INVALID_NUMBERS {
             assert!(!is_valid(number));
+        }
+    }
+
+    #[test]
+    fn parse_invalidnumbers_returns_correct_error() {
+        for (number, error) in INVALID_NUMBERS {
+            assert_eq!(*error, number.parse::<TurkishId>().err().unwrap());
         }
     }
 }
