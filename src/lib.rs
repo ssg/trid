@@ -62,10 +62,8 @@ pub fn is_valid(value: &str) -> bool {
     validate(value).is_ok()
 }
 
-macro_rules! next {
-    ($iter:ident) => {
-        $iter.next().flatten().ok_or(Err::InvalidDigit)
-    };
+fn next<T>(t: &mut impl Iterator<Item = Option<T>>) -> Result<T, Err> {
+    t.next().flatten().ok_or(Err::InvalidDigit)
 }
 
 /// Internal function to validate a given Turkish ID number.
@@ -77,18 +75,18 @@ fn validate(s: &str) -> Result<(), Err> {
     let mut digits = s
         .chars()
         .map(|c| c.to_digit(10).and_then(|u| i32::try_from(u).ok()));
-    let mut odd_sum = next!(digits)?;
+    let mut odd_sum = next(&mut digits)?;
     if odd_sum == 0 {
         return Err(Err::InvalidDigit);
     }
     let mut even_sum = 0i32;
     for _ in 0..4 {
-        even_sum += next!(digits)?;
-        odd_sum += next!(digits)?;
+        even_sum += next(&mut digits)?;
+        odd_sum += next(&mut digits)?;
     }
 
-    let first_checksum = next!(digits)?;
-    let final_checksum = next!(digits)?;
+    let first_checksum = next(&mut digits)?;
+    let final_checksum = next(&mut digits)?;
 
     let computed_final = (odd_sum + even_sum + first_checksum) % 10;
     if computed_final != final_checksum {
