@@ -59,7 +59,7 @@ impl Error for Err {}
 /// assert!(!trid::is_valid("06558242278"));
 /// ```
 pub fn is_valid(value: &str) -> bool {
-    validate(value).is_ok()
+    validate(value.as_bytes()).is_ok()
 }
 
 fn next<T>(t: &mut impl Iterator<Item = Option<T>>) -> Result<T, Err> {
@@ -67,14 +67,15 @@ fn next<T>(t: &mut impl Iterator<Item = Option<T>>) -> Result<T, Err> {
 }
 
 /// Internal function to validate a given Turkish ID number.
-fn validate(s: &str) -> Result<(), Err> {
-    if s.len() != LENGTH {
+fn validate(bytes: &[u8]) -> Result<(), Err> {
+    if bytes.len() != LENGTH {
         return Err(Err::InvalidLength);
     }
 
-    let mut digits = s
-        .chars()
-        .map(|c| c.to_digit(10).and_then(|u| i32::try_from(u).ok()));
+    let mut digits = bytes
+        .iter()
+        .map(|b| (*b as i32) - 48)
+        .map(|i| (0..=9).contains(&i).then(|| i));
     let mut odd_sum = next(&mut digits)?;
     if odd_sum == 0 {
         return Err(Err::InvalidDigit);
@@ -128,7 +129,7 @@ impl FromStr for TurkishId {
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let bytes = s.as_bytes();
-        validate(bytes)?;
+        validate(&bytes)?;
         Ok(bytes.into())
     }
 }
