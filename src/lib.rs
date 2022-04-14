@@ -89,17 +89,13 @@ fn validate(bytes: &[u8]) -> Result<(), Err> {
     let first_checksum = next(&mut digits)?;
     let final_checksum = next(&mut digits)?;
 
-    let computed_final = (odd_sum + even_sum + first_checksum) % 10;
-    if computed_final != final_checksum {
+    let final_checksum_computed = (odd_sum + even_sum + first_checksum) % 10;
+    if final_checksum_computed != final_checksum {
         return Err(Err::InvalidChecksum);
     }
 
-    let mut computed_first = ((odd_sum * 7) - even_sum) % 10;
-    if computed_first < 0 {
-        computed_first += 10;
-    }
-
-    if computed_first != first_checksum {
+    let first_checksum_computed = ((odd_sum * 7) - even_sum).rem_euclid(10);
+    if first_checksum_computed != first_checksum {
         return Err(Err::InvalidChecksum);
     }
 
