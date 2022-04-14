@@ -126,39 +126,10 @@ impl From<&[u8]> for TurkishId {
 impl FromStr for TurkishId {
     type Err = TurkishIdError;
 
-    /// Returns `TurkishId` from a string if it's valid, otherwise returns `TurkishIdError`.
-    ///
-    /// # Arguments
-    ///
-    /// * `value` - The string that contains the ID number.
-    ///
-    /// # Returns
-    ///
-    /// * `Ok(TurkishId)` - If the ID number is valid.
-    /// * `Err(TurkishIdError)` - If the ID number is invalid.
-    ///
-    /// # Example
-    ///
-    /// ```
-    /// use trid::TurkishId;
-    /// use trid::TurkishIdError;
-    ///
-    /// let id : Result<TurkishId, TurkishIdError> = "19191919190".parse();
-    /// assert_eq!(id, Ok("19191919190".parse::<TurkishId>().unwrap()));
-    /// ```
-    ///
-    /// ```
-    /// use trid::TurkishId;
-    /// use trid::TurkishIdError;
-    ///
-    /// let result : Result<TurkishId, TurkishIdError> = "6558242278".parse();
-    /// assert_eq!(result, Err(trid::TurkishIdError::InvalidLength));
-    /// ```
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        validate(s)?;
-        Ok(s.as_bytes()
-            .try_into()
-            .expect("Internal error: validation should never fail"))
+        let bytes = s.as_bytes();
+        validate(bytes)?;
+        Ok(bytes.into())
     }
 }
 
