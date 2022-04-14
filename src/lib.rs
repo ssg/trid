@@ -110,13 +110,19 @@ impl Display for TurkishId {
 
 impl From<&Bytes> for TurkishId {
     fn from(value: &Bytes) -> Self {
-        TurkishId(value.to_owned())
+        validate(value).expect("Invalid TurkishId");
+        Self(value.to_owned())
     }
 }
 
 impl From<&[u8]> for TurkishId {
     fn from(value: &[u8]) -> Self {
-        TurkishId(value.try_into().expect("Invalid borrow passed"))
+        validate(value).expect("Invalid TurkishId");
+        Self(
+            value
+                .try_into()
+                .expect("Internal error: did validate() return Ok incorrectly?"),
+        )
     }
 }
 
@@ -125,7 +131,7 @@ impl FromStr for TurkishId {
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let bytes = s.as_bytes();
-        validate(&bytes)?;
+        validate(bytes)?;
         Ok(bytes.into())
     }
 }
