@@ -108,6 +108,9 @@ impl Display for TurkishId {
     }
 }
 
+// conversion of byte slices is From-based because we expect those
+// to be valid buffers always. if you want a Result, construct
+// TurkishId from a string using parse(), or from a number.
 impl From<&Bytes> for TurkishId {
     fn from(value: &Bytes) -> Self {
         validate(value).expect("Invalid TurkishId");
