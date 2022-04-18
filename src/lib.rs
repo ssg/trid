@@ -11,7 +11,7 @@ pub const LENGTH: usize = 11;
 type Bytes = [u8; LENGTH];
 
 /// Turkish citizenship ID number.
-#[derive(Debug, Eq, PartialEq, Copy, Clone)]
+#[derive(Debug, Eq, PartialEq, Hash, Copy, Clone)]
 pub struct TurkishId(Bytes);
 
 /// Represents the parser error for a given Turkish citizenship ID number.
