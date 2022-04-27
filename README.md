@@ -9,11 +9,10 @@ with error messages, Rust has been extremely impressive so far. (How cool are do
 # Usage
 The crate provides `TurkishId` type that represents a valid Turkish ID number. It can be instantiated 
 from a string using its `parse()` method, or directly converted from a `u8` slice using `from()` or
-`try_from()` methods.
+`try_from()` methods. The type guarantess that it never contains an invalid number, so there's no need
+to validate a `TurkishId` type.
 
-The crate provides `is_valid(value: &str)` function for validating ID numbers and a `TurkishId` 
-type to encompass a Turkish citizenship ID number, so you don't need to validate it constantly and 
-pass it around freely.
+The crate also provides `is_valid(value: &str)` function for validating ID numbers.
 
 # Examples
 
