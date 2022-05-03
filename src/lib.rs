@@ -108,24 +108,20 @@ impl Display for TurkishId {
     }
 }
 
-// conversion of byte slices is From-based because we expect those
-// to be valid buffers always. if you want a Result, construct
-// TurkishId from a string using parse(), or from a number.
-impl From<&Bytes> for TurkishId {
-    fn from(value: &Bytes) -> Self {
-        validate(value).expect("Invalid TurkishId");
-        Self(value.to_owned())
+impl TryFrom<&Bytes> for TurkishId {
+    type Error = Err;
+    fn try_from(value: &Bytes) -> Result<Self, Self::Error> {
+        validate(value)?;
+        Ok(Self(value.clone()))
     }
 }
 
-impl From<&[u8]> for TurkishId {
-    fn from(value: &[u8]) -> Self {
-        validate(value).expect("Invalid TurkishId");
-        Self(
-            value
-                .try_into()
-                .expect("Internal error: did validate() return Ok incorrectly?"),
-        )
+impl TryFrom<&[u8]> for TurkishId {
+    type Error = Err;
+    fn try_from(value: &[u8]) -> Result<Self, Self::Error> {
+        validate(value)?;
+        let val: Bytes = value.try_into().map_err(|_| Err::InvalidLength)?;
+        Ok(Self(val))
     }
 }
 
