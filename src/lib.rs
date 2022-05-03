@@ -112,7 +112,7 @@ impl TryFrom<&Bytes> for TurkishId {
     type Error = Err;
     fn try_from(value: &Bytes) -> Result<Self, Self::Error> {
         validate(value)?;
-        Ok(Self(value.clone()))
+        Ok(Self(*value))
     }
 }
 
