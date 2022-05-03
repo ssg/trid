@@ -130,8 +130,7 @@ impl FromStr for TurkishId {
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let bytes = s.as_bytes();
-        validate(bytes)?;
-        Ok(bytes.into())
+        bytes.try_into()
     }
 }
 
