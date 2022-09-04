@@ -1,6 +1,7 @@
-use std::{
+#![cfg_attr(not(test), no_std)]
+
+use core::{
     convert::TryInto,
-    error::Error,
     fmt::{Display, Formatter},
     str,
     str::FromStr,
@@ -25,7 +26,7 @@ pub enum TurkishIdError {
 type Err = TurkishIdError;
 
 impl Display for Err {
-    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+    fn fmt(&self, f: &mut Formatter<'_>) -> core::fmt::Result {
         match self {
             Self::InvalidLength => write!(f, "invalid length"),
             Self::InvalidDigit => write!(f, "invalid digit"),
@@ -33,8 +34,6 @@ impl Display for Err {
         }
     }
 }
-
-impl Error for Err {}
 
 /// Checks if the given string is a valid Turkish citizenship ID number.
 ///
@@ -103,7 +102,7 @@ fn validate(bytes: &[u8]) -> Result<(), Err> {
 }
 
 impl Display for TurkishId {
-    fn fmt(&self, f: &mut Formatter) -> Result<(), std::fmt::Error> {
+    fn fmt(&self, f: &mut Formatter) -> Result<(), core::fmt::Error> {
         write!(f, "{}", str::from_utf8(&self.0).unwrap())
     }
 }
