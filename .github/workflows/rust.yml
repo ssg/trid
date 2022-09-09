@@ -11,14 +11,21 @@ env:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v3
     - name: Build
       run: cargo build --verbose
+
+  test:
+    runs-on: ubuntu-latest    
+    steps:
     - name: Run tests
       run: cargo test --verbose
-    - name: Deploy
-      run: cargo deploy --verbose
+
+  publish:
+    needs: ['build', 'test']
+    runs-on: ubuntu-latest
+    steps:
+    - name: Publish
+      run: cargo publish --verbose
