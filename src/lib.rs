@@ -1,3 +1,28 @@
+//! Provides a `TurkishId` data type that holds a valid Turkish citizenship ID number.
+//! ID numbers can also be directly validated on `&str`'s by using `is_valid` function.
+//!
+//! # Examples
+//!
+//! Validate a Turkish citizenship ID number:
+//!
+//! ```rust
+//! if trid::is_valid("12345678901") {
+//!     // yayyy!
+//! }
+//! ```
+//!
+//! Try parsing a string into `TurkishId`:
+//!
+//! ```rust
+//! use trid::TurkishId;
+//!
+//! let id : TurkishId = "12345678901".parse()?;
+//! ```
+//!
+//! # License
+//!
+//! Apache License Version 2.0, see LICENSE file for details.
+
 #![cfg_attr(not(test), no_std)]
 
 use core::{
