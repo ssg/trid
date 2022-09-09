@@ -1,5 +1,11 @@
 # Changes
 
+## 3.1.0
+
+### Improvements
+
+- Avoid panic in `Display` impl completely. The code is completely panic-free now.
+
 ## 3.0.0
 
 ### New features
