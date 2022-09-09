@@ -14,9 +14,12 @@
 //! Try parsing a string into `TurkishId`:
 //!
 //! ```rust
-//! use trid::TurkishId;
+//! use trid::*;
 //!
-//! let id : TurkishId = "12345678901".parse()?;
+//! fn test() -> Result<TurkishId, TurkishIdError> {
+//!     let id : TurkishId = "12345678901".parse()?;
+//!     Ok(id)
+//! }
 //! ```
 //!
 //! # License
