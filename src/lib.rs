@@ -128,7 +128,11 @@ fn validate(bytes: &[u8]) -> Result<(), Err> {
 
 impl Display for TurkishId {
     fn fmt(&self, f: &mut Formatter) -> Result<(), core::fmt::Error> {
-        write!(f, "{}", str::from_utf8(&self.0).unwrap())
+        write!(
+            f,
+            "{}",
+            str::from_utf8(&self.0).map_err(|_| core::fmt::Error::default())?
+        )
     }
 }
 
