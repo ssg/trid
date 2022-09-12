@@ -1,5 +1,18 @@
 # Changes
 
+## 3.2.0
+
+### Improvements
+
+- Removed `Display` impl from `TurkishIdError` completely as deriving `Debug` already does it.
+  This might mean that any code that relies on the fmt output of `TurkishIdError` might break.
+
+## 3.1.1
+
+### Fixes
+
+- Fixed build break caused by inline source comments.
+
 ## 3.1.0
 
 ### Improvements
