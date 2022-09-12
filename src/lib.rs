@@ -157,8 +157,7 @@ impl TryFrom<&[u8]> for TurkishId {
 }
 
 impl FromStr for TurkishId {
-    type Err = TurkishIdError;
-
+    type Err = Err;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let bytes = s.as_bytes();
         bytes.try_into()
