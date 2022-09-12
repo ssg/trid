@@ -78,3 +78,12 @@ fn hashset_compatible() {
     assert_eq!(num2, num);
     assert_eq!(1, set.len());
 }
+
+#[test]
+fn display_returnsthesamerepresentation() {
+    for number in VALID_NUMBERS {
+        let id: TurkishId = number.parse().unwrap();
+        let idstr = format!("{id}");
+        assert_eq!(idstr, *number);
+    }
+}
