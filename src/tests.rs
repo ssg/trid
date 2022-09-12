@@ -36,6 +36,7 @@ const INVALID_NUMBERS: &[(&str, Err)] = &[
     (" 7655824227", Err::InvalidDigit),
     ("5582422781 ", Err::InvalidDigit),
     // uneven length
+    ("", Err::InvalidLength),
     ("7", Err::InvalidLength),
     ("76", Err::InvalidLength),
     ("76558", Err::InvalidLength),
