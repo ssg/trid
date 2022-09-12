@@ -53,16 +53,6 @@ pub enum TurkishIdError {
 
 type Err = TurkishIdError;
 
-impl Display for Err {
-    fn fmt(&self, f: &mut Formatter<'_>) -> core::fmt::Result {
-        match self {
-            Self::InvalidLength => write!(f, "invalid length"),
-            Self::InvalidDigit => write!(f, "invalid digit"),
-            Self::InvalidChecksum => write!(f, "invalid checksum"),
-        }
-    }
-}
-
 /// Checks if the given string is a valid Turkish citizenship ID number.
 ///
 /// # Arguments
