@@ -1,4 +1,4 @@
-name: Build, Test & Deploy
+name: Test
 
 on:
   push:
@@ -10,26 +10,9 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v3
-    - name: Build
-      run: cargo build --verbose
-
   test:
     runs-on: ubuntu-latest    
     steps:
     - uses: actions/checkout@v3
     - name: Run tests
       run: cargo test --verbose
-
-  publish:
-    needs: ['build', 'test']
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v3
-    - name: Publish
-      run: cargo publish --verbose --token ${CARGO_REGISTRY_TOKEN}
-      env:
-        CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
