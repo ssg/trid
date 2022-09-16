@@ -2,15 +2,13 @@
 
 ## 4.0.0
 
+### Breaking changes
+
 - Removed `TryFrom` impls for `&Bytes` and `&[u8]` types. The only conversion
   is possible from `&str` now. Changed the validation to use `&str` instead of
   `&[u8]`. The main reason I made this change is that it makes no sense to
   convert from a ASCII-encoded `&[u8]` not have it as `&str`. The conversion
   can alerady be done with `from_utf8()`, no need to repeat it there.
-
-## 3.2.0
-
-### Improvements
 
 - Removed `Display` impl from `TurkishIdError` completely as deriving `Debug` already does it.
   This might mean that any code that relies on the fmt output of `TurkishIdError` might break.
