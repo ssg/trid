@@ -4,17 +4,17 @@
 # trid - Turkish Citizenship ID Number crate
 
 This is my first ever written Rust code derived from my own [TurkishId](https://github.com/ssg/TurkishId)
-package for .NET. I'm trying to use existing code as an excuse to learn about Rust. Despite constant tackling
-with error messages, Rust has been extremely impressive so far. (How cool are doc-tests!?)
+package for .NET. I'm trying to use existing code as an excuse to learn about Rust. Despite constant tackling with error messages, Rust has been extremely impressive so far. (How cool are doc-tests!?)
 
 # Usage
 
 The crate provides `TurkishId` type that represents a valid Turkish ID number. It can be instantiated
-from a string using its `parse()` method, or directly converted from a `u8` slice using `from()` or
-`try_from()` methods. The type guarantess that it never contains an invalid number, so there's no need
-to validate a `TurkishId` type.
+from a string using the `parse()` method of `str` type. `TurkishId` type guarantess that it never contains an invalid Turkish ID number, so there's no need to validate a `TurkishId` once parsed. It
+can always be passed around.
 
 The crate also provides `is_valid(value: &str)` function for validating ID numbers.
+
+The type occupies 11 bytes in memory and kept as ASCII representation of the number.
 
 # Examples
 
