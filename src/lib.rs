@@ -31,13 +31,12 @@
 use core::{
     convert::TryInto,
     fmt::{Display, Formatter},
-    str,
-    str::FromStr,
+    str::{self, FromStr},
 };
 
 pub const LENGTH: usize = 11;
 
-type Bytes = [u8; LENGTH];
+pub(crate) type Bytes = [u8; LENGTH];
 
 /// Turkish citizenship ID number.
 #[derive(Debug, Eq, PartialEq, Hash, Copy, Clone)]
@@ -51,9 +50,10 @@ pub enum TurkishIdError {
     InvalidChecksum,
 }
 
-type Err = TurkishIdError;
+/// Internal alias for `TurkishIdError`.
+pub(crate) type Err = TurkishIdError;
 
-/// Checks if the given string is a valid Turkish citizenship ID number.
+/// Checks if the given string slice is a valid Turkish citizenship ID number.
 ///
 /// # Arguments
 ///
@@ -76,35 +76,39 @@ type Err = TurkishIdError;
 /// assert!(!trid::is_valid("06558242278"));
 /// ```
 pub fn is_valid(value: &str) -> bool {
-    validate(value.as_bytes()).is_ok()
-}
-
-fn next<T>(t: &mut impl Iterator<Item = Option<T>>) -> Result<T, Err> {
-    t.next().flatten().ok_or(Err::InvalidDigit)
+    validate(value).is_ok()
 }
 
 /// Internal function to validate a given Turkish ID number.
-fn validate(bytes: &[u8]) -> Result<(), Err> {
-    if bytes.len() != LENGTH {
+fn validate(str: &str) -> Result<(), Err> {
+    /// Flattens and handles the error together
+    fn next_digit<T>(t: &mut impl Iterator<Item = Option<T>>) -> Result<T, Err> {
+        t.next().flatten().ok_or(Err::InvalidDigit)
+    }
+
+    if str.len() != LENGTH {
         return Err(Err::InvalidLength);
     }
 
-    let mut digits = bytes
-        .iter()
-        .map(|b| (*b as i32) - 48)
-        .map(|i| (0..=9).contains(&i).then(|| i));
-    let mut odd_sum = next(&mut digits)?;
+    // get a digit iterator
+    let mut digits = str.chars()
+        .map(|c| c.to_digit(10))
+        .map(|c| c.and_then(|c| i32::try_from(c).ok()));
+
+    // start calculating checksums
+    let mut odd_sum = next_digit(&mut digits)?;
     if odd_sum == 0 {
+        // the first digit cannot be zero
         return Err(Err::InvalidDigit);
     }
-    let mut even_sum = 0i32;
+    let mut even_sum = 0;
     for _ in 0..4 {
-        even_sum += next(&mut digits)?;
-        odd_sum += next(&mut digits)?;
+        even_sum += next_digit(&mut digits)?;
+        odd_sum += next_digit(&mut digits)?;
     }
 
-    let first_checksum = next(&mut digits)?;
-    let final_checksum = next(&mut digits)?;
+    let first_checksum = next_digit(&mut digits)?;
+    let final_checksum = next_digit(&mut digits)?;
 
     let final_checksum_computed = (odd_sum + even_sum + first_checksum) % 10;
     if final_checksum_computed != final_checksum {
@@ -129,28 +133,12 @@ impl Display for TurkishId {
     }
 }
 
-impl TryFrom<&Bytes> for TurkishId {
-    type Error = Err;
-    fn try_from(value: &Bytes) -> Result<Self, Self::Error> {
-        validate(value)?;
-        Ok(Self(*value))
-    }
-}
-
-impl TryFrom<&[u8]> for TurkishId {
-    type Error = Err;
-    fn try_from(value: &[u8]) -> Result<Self, Self::Error> {
-        validate(value)?;
-        let val: Bytes = value.try_into().map_err(|_| Err::InvalidLength)?;
-        Ok(Self(val))
-    }
-}
-
 impl FromStr for TurkishId {
     type Err = Err;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        let bytes = s.as_bytes();
-        bytes.try_into()
+        validate(s)?;
+        let result = Self(s.as_bytes().try_into().map_err(|_| Err::InvalidLength)?);
+        Ok(result)
     }
 }
 
