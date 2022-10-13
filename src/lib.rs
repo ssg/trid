@@ -110,6 +110,8 @@ fn validate(str: &str) -> Result<(), Err> {
     let first_checksum = next_digit(&mut digits)?;
     let final_checksum = next_digit(&mut digits)?;
 
+    // we check for the final checksum first because it's computationally 
+    // cheaper.
     let final_checksum_computed = (odd_sum + even_sum + first_checksum) % 10;
     if final_checksum_computed != final_checksum {
         return Err(Err::InvalidChecksum);
