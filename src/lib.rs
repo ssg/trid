@@ -91,9 +91,9 @@ fn validate(str: &str) -> Result<(), Err> {
     }
 
     // get a digit iterator
-    let mut digits = str.chars()
-        .map(|c| c.to_digit(10))
-        .map(|c| c.and_then(|c| i32::try_from(c).ok()));
+    let mut digits = str
+        .chars()
+        .map(|c| c.to_digit(10).and_then(|u| i32::try_from(u).ok()));
 
     // start calculating checksums
     let mut odd_sum = next_digit(&mut digits)?;
@@ -110,7 +110,7 @@ fn validate(str: &str) -> Result<(), Err> {
     let first_checksum = next_digit(&mut digits)?;
     let final_checksum = next_digit(&mut digits)?;
 
-    // we check for the final checksum first because it's computationally 
+    // we check for the final checksum first because it's computationally
     // cheaper.
     let final_checksum_computed = (odd_sum + even_sum + first_checksum) % 10;
     if final_checksum_computed != final_checksum {
