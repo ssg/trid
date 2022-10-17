@@ -44,14 +44,11 @@ pub struct TurkishId(Bytes);
 
 /// Represents the parser error for a given Turkish citizenship ID number.
 #[derive(Debug, Eq, PartialEq)]
-pub enum TurkishIdError {
+pub enum Error {
     InvalidLength,
     InvalidDigit,
     InvalidChecksum,
 }
-
-/// Internal alias for `TurkishIdError`.
-pub(crate) type Err = TurkishIdError;
 
 /// Checks if the given string slice is a valid Turkish citizenship ID number.
 ///
@@ -80,14 +77,14 @@ pub fn is_valid(value: &str) -> bool {
 }
 
 /// Internal function to validate a given Turkish ID number.
-fn validate(str: &str) -> Result<(), Err> {
+fn validate(str: &str) -> Result<(), Error> {
     /// Flattens and handles the error together
-    fn next_digit<T>(t: &mut impl Iterator<Item = Option<T>>) -> Result<T, Err> {
-        t.next().flatten().ok_or(Err::InvalidDigit)
+    fn next_digit<T>(t: &mut impl Iterator<Item = Option<T>>) -> Result<T, Error> {
+        t.next().flatten().ok_or(Error::InvalidDigit)
     }
 
     if str.len() != LENGTH {
-        return Err(Err::InvalidLength);
+        return Err(Error::InvalidLength);
     }
 
     // get a digit iterator
@@ -99,8 +96,9 @@ fn validate(str: &str) -> Result<(), Err> {
     let mut odd_sum = next_digit(&mut digits)?;
     if odd_sum == 0 {
         // the first digit cannot be zero
-        return Err(Err::InvalidDigit);
+        return Err(Error::InvalidDigit);
     }
+
     let mut even_sum = 0;
     for _ in 0..4 {
         even_sum += next_digit(&mut digits)?;
@@ -114,12 +112,12 @@ fn validate(str: &str) -> Result<(), Err> {
     // cheaper.
     let final_checksum_computed = (odd_sum + even_sum + first_checksum) % 10;
     if final_checksum_computed != final_checksum {
-        return Err(Err::InvalidChecksum);
+        return Err(Error::InvalidChecksum);
     }
 
     let first_checksum_computed = ((odd_sum * 7) - even_sum).rem_euclid(10);
     if first_checksum_computed != first_checksum {
-        return Err(Err::InvalidChecksum);
+        return Err(Error::InvalidChecksum);
     }
 
     Ok(())
@@ -136,10 +134,10 @@ impl Display for TurkishId {
 }
 
 impl FromStr for TurkishId {
-    type Err = Err;
+    type Err = Error;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         validate(s)?;
-        let result = Self(s.as_bytes().try_into().map_err(|_| Err::InvalidLength)?);
+        let result = Self(s.as_bytes().try_into().map_err(|_| Error::InvalidLength)?);
         Ok(result)
     }
 }

@@ -17,36 +17,36 @@ const VALID_NUMBERS: &[&str] = &[
     "10000000146",
 ];
 
-const INVALID_NUMBERS: &[(&str, Err)] = &[
-    ("04948892948", Err::InvalidDigit),    // first digit zero
-    ("14948892946", Err::InvalidChecksum), // last checksum INVALID
-    ("14948892937", Err::InvalidChecksum), // first checksum INVALID
+const INVALID_NUMBERS: &[(&str, Error)] = &[
+    ("04948892948", Error::InvalidDigit),    // first digit zero
+    ("14948892946", Error::InvalidChecksum), // last checksum INVALID
+    ("14948892937", Error::InvalidChecksum), // first checksum INVALID
     // non numeric chars
-    ("A4948892948", Err::InvalidDigit),
-    ("7B558242278", Err::InvalidDigit),
-    ("80C76431508", Err::InvalidDigit),
-    ("767D5508630", Err::InvalidDigit),
-    ("9079E350894", Err::InvalidDigit),
-    ("43473F24496", Err::InvalidDigit),
-    ("566733G2584", Err::InvalidDigit),
-    ("2926080H600", Err::InvalidDigit),
-    ("93212606I04", Err::InvalidDigit),
-    ("352014085J8", Err::InvalidDigit),
-    ("3520140853K", Err::InvalidDigit),
+    ("A4948892948", Error::InvalidDigit),
+    ("7B558242278", Error::InvalidDigit),
+    ("80C76431508", Error::InvalidDigit),
+    ("767D5508630", Error::InvalidDigit),
+    ("9079E350894", Error::InvalidDigit),
+    ("43473F24496", Error::InvalidDigit),
+    ("566733G2584", Error::InvalidDigit),
+    ("2926080H600", Error::InvalidDigit),
+    ("93212606I04", Error::InvalidDigit),
+    ("352014085J8", Error::InvalidDigit),
+    ("3520140853K", Error::InvalidDigit),
     // spaces
-    (" 7655824227", Err::InvalidDigit),
-    ("5582422781 ", Err::InvalidDigit),
+    (" 7655824227", Error::InvalidDigit),
+    ("5582422781 ", Error::InvalidDigit),
     // uneven length
-    ("", Err::InvalidLength),
-    ("7", Err::InvalidLength),
-    ("76", Err::InvalidLength),
-    ("76558", Err::InvalidLength),
-    ("765582", Err::InvalidLength),
-    ("7655824", Err::InvalidLength),
-    ("76558242", Err::InvalidLength),
-    ("765582422", Err::InvalidLength),
-    ("7655824227", Err::InvalidLength),
-    ("765582422781", Err::InvalidLength),
+    ("", Error::InvalidLength),
+    ("7", Error::InvalidLength),
+    ("76", Error::InvalidLength),
+    ("76558", Error::InvalidLength),
+    ("765582", Error::InvalidLength),
+    ("7655824", Error::InvalidLength),
+    ("76558242", Error::InvalidLength),
+    ("765582422", Error::InvalidLength),
+    ("7655824227", Error::InvalidLength),
+    ("765582422781", Error::InvalidLength),
 ];
 
 #[test]
