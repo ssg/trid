@@ -1,5 +1,12 @@
 # Changes
 
+## 5.0.0
+
+### Breaking changes
+
+- `TurkishIdError` is renamed to `Error` to conform to Rust semantics. Perhaps,
+  I shouldn't have been so hesitant to make this package 1.0.0, huh :)
+
 ## 4.0.0
 
 ### Breaking changes
