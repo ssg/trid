@@ -16,7 +16,7 @@
 //! ```rust
 //! use trid::*;
 //!
-//! fn test() -> Result<TurkishId, TurkishIdError> {
+//! fn test() -> Result<TurkishId, Error> {
 //!     let id : TurkishId = "12345678901".parse()?;
 //!     Ok(id)
 //! }
