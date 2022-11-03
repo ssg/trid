@@ -123,6 +123,7 @@ fn validate(str: &str) -> Result<(), Error> {
     Ok(())
 }
 
+/// TurkishId types are displayed as regular numbers.
 impl Display for TurkishId {
     fn fmt(&self, f: &mut Formatter) -> Result<(), core::fmt::Error> {
         write!(
@@ -133,6 +134,8 @@ impl Display for TurkishId {
     }
 }
 
+/// TurkishId can only be constructed from a string despite that it's stored
+/// as a fixed-length byte array internally.
 impl FromStr for TurkishId {
     type Err = Error;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
