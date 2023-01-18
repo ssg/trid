@@ -2,8 +2,11 @@
 	"version": "2.0.0",
 	"tasks": [
 		{
-			"type": "cargo",
-			"command": "build",
+			"type": "process",
+			"command": "cargo",
+			"args": [
+				"build",
+			],
 			"problemMatcher": [
 				"$rustc"
 			],
@@ -11,11 +14,14 @@
 				"kind": "build",
 				"isDefault": true
 			},
-			"label": "rust: cargo build"
+			"label": "Rust: cargo build"
 		},
 		{
-			"type": "cargo",
-			"command": "test",
+			"type": "process",
+			"command": "cargo",
+			"args": [
+				"test",
+			],
 			"problemMatcher": [
 				"$rustc"
 			],
@@ -23,16 +29,19 @@
 				"kind": "test",
 				"isDefault": true
 			},
-			"label": "rust: cargo test"
+			"label": "Rust: cargo test"
 		},
 		{
-			"type": "cargo",
-			"command": "clippy",
+			"type": "process",
+			"command": "cargo",
+			"args": [
+				"clippy",
+			],
 			"problemMatcher": [
 				"$rustc"
 			],
 			"group": "build",
-			"label": "rust: cargo clippy"
+			"label": "Rust: cargo clippy"
 		}
 	]
 }
