@@ -10,3 +10,6 @@ authors = ["Sedat Kapanoglu <sedat@kapanoglu.com>"]
 license = "Apache-2.0"
 keywords = ["turkish", "turkey", "id", "number"]
 categories = ["parser-implementations"]
+
+[net]
+git-fetch-with-cli = true
