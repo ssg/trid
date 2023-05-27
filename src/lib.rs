@@ -31,6 +31,7 @@
 use core::{
     convert::TryInto,
     fmt::{Display, Formatter},
+    ops::Range,
     str::{self, FromStr},
 };
 
@@ -38,7 +39,8 @@ pub const LENGTH: usize = 11;
 
 pub(crate) type Bytes = [u8; LENGTH];
 
-/// Turkish citizenship ID number.
+/// Turkish citizenship ID number. The number is stored as ASCII digits
+/// "0".."9" in the structure.
 #[derive(Debug, Eq, PartialEq, Hash, Copy, Clone)]
 pub struct TurkishId(Bytes);
 
@@ -115,6 +117,8 @@ fn validate(str: &str) -> Result<(), Error> {
         return Err(Error::InvalidChecksum);
     }
 
+    // we use euclidian remainder due to the possibility that the final
+    // checksum wmight be negative.
     let first_checksum_computed = ((odd_sum * 7) - even_sum).rem_euclid(10);
     if first_checksum_computed != first_checksum {
         return Err(Error::InvalidChecksum);
@@ -131,6 +135,51 @@ impl Display for TurkishId {
             "{}",
             str::from_utf8(&self.0).map_err(|_| core::fmt::Error::default())?
         )
+    }
+}
+
+#[derive(Debug, Eq, PartialEq)]
+pub enum FromSeqError {
+    OutOfRange,
+}
+
+impl TurkishId {
+    /// Generate a valid TurkishId from a sequence number by calculating
+    /// checksums and building the buffer for it.
+    ///
+    /// # Arguments
+    /// - seq - A number between 100,000,000 and 999,999,999
+    ///
+    /// # Returns
+    /// A Result with `TurkishId` if the values are in range, otherwise
+    /// `FromSeqError`
+    pub fn from_seq(seq: u32) -> Result<TurkishId, FromSeqError> {
+        fn to_ascii(digit: i32) -> u8 {
+            digit as u8 + b'0'
+        }
+        const VALID_SEQ_RANGE: Range<u32> = 100_000_000..1_000_000_000;
+        if !VALID_SEQ_RANGE.contains(&seq) {
+            return Err(FromSeqError::OutOfRange);
+        }
+        let mut d: Bytes = [0; LENGTH];
+        let mut odd_sum: i32 = 0;
+        let mut even_sum: i32 = 0;
+        let mut divisor = VALID_SEQ_RANGE.start;
+        for (i, item) in d.iter_mut().enumerate().take(9) {
+            let digit = (seq / divisor % 10) as i32;
+            if i % 2 == 0 {
+                odd_sum += digit;
+            } else {
+                even_sum += digit;
+            }
+            *item = to_ascii(digit);
+            divisor /= 10;
+        }
+        let first_checksum = ((odd_sum * 7) - even_sum).rem_euclid(10);
+        let second_checksum = (odd_sum + even_sum + first_checksum) % 10;
+        d[9] = to_ascii(first_checksum);
+        d[10] = to_ascii(second_checksum);
+        Ok(TurkishId(d))
     }
 }
 

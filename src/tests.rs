@@ -49,6 +49,8 @@ const INVALID_NUMBERS: &[(&str, Error)] = &[
     ("765582422781", Error::InvalidLength),
 ];
 
+const OUT_OF_RANGE_SEQUENCES: &[u32] = &[0, 99_999_999, 1_000_000_001, u32::MAX];
+
 #[test]
 fn is_valid_validnumbers_returns_true() {
     for number in VALID_NUMBERS {
@@ -84,8 +86,25 @@ fn hashset_compatible() {
 #[test]
 fn display_returnsthesamerepresentation() {
     for number in VALID_NUMBERS {
-        let id: TurkishId = number.parse().unwrap();
+        let id = TurkishId::from_str(number).unwrap();
         let idstr = format!("{id}");
         assert_eq!(idstr, *number);
+    }
+}
+
+#[test]
+fn from_seq_produces_valid_numbers() {
+    for number in VALID_NUMBERS {
+        let seq: u32 = number[..9].parse().unwrap();
+        let id = TurkishId::from_seq(seq).unwrap();
+        assert_eq!(*number, id.to_string());
+    }
+}
+
+#[test]
+fn from_seq_out_of_range_values_return_error() {
+    for seq in OUT_OF_RANGE_SEQUENCES {
+        let result = TurkishId::from_seq(*seq);
+        assert_eq!(result.err(), Some(FromSeqError::OutOfRange));
     }
 }

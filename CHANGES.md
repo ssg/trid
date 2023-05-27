@@ -6,6 +6,9 @@
 
 - `TurkishIdError` is renamed to `Error` to conform to Rust semantics. Perhaps,
   I shouldn't have been so hesitant to make this package 1.0.0, huh :)
+  
+- Added `from_seq()` method that can generate a valid TurkishId from a given
+  sequence number.
 
 ## 4.0.0
 
