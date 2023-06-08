@@ -1,0 +1,19 @@
+[package]
+edition = "2021"
+name = "tridgen"
+version = "0.1.0"
+description = "Turkish citizenship ID generator"
+readme = "README.md"
+homepage = "https://github.com/ssg/trid"
+repository = "https://github.com/ssg/trid"
+authors = ["Sedat Kapanoglu <sedat@kapanoglu.com>"]
+license = "Apache-2.0"
+keywords = ["turkish", "turkey", "id", "number", "generator"]
+categories = ["command-line-utilities"]
+
+[dependencies]
+trid = { version = "*", path = "../trid" }
+rand = "0.8.5"
+
+[[bin]]
+name = "tridgen"
