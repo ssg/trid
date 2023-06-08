@@ -144,6 +144,8 @@ pub enum FromSeqError {
 }
 
 impl TurkishId {
+    pub const SEQ_RANGE: Range<u32> = 100_000_000..1_000_000_000;
+
     /// Generate a valid TurkishId from a sequence number by calculating
     /// checksums and building the buffer for it.
     ///
@@ -157,14 +159,13 @@ impl TurkishId {
         fn to_ascii(digit: i32) -> u8 {
             digit as u8 + b'0'
         }
-        const VALID_SEQ_RANGE: Range<u32> = 100_000_000..1_000_000_000;
-        if !VALID_SEQ_RANGE.contains(&seq) {
+        if !TurkishId::SEQ_RANGE.contains(&seq) {
             return Err(FromSeqError::OutOfRange);
         }
         let mut d: Bytes = [0; LENGTH];
         let mut odd_sum: i32 = 0;
         let mut even_sum: i32 = 0;
-        let mut divisor = VALID_SEQ_RANGE.start;
+        let mut divisor = TurkishId::SEQ_RANGE.start;
         for (i, item) in d.iter_mut().enumerate().take(9) {
             let digit = (seq / divisor % 10) as i32;
             if i % 2 == 0 {
