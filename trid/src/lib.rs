@@ -133,7 +133,7 @@ impl Display for TurkishId {
         write!(
             f,
             "{}",
-            str::from_utf8(&self.0).map_err(|_| core::fmt::Error::default())?
+            str::from_utf8(&self.0).map_err(|_| core::fmt::Error)?
         )
     }
 }
