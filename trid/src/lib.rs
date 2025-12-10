@@ -74,6 +74,7 @@ pub enum Error {
 ///
 /// assert!(!trid::is_valid("06558242278"));
 /// ```
+#[must_use = "validity check must not be ignored"]
 pub fn is_valid(value: &str) -> bool {
     validate(value).is_ok()
 }
