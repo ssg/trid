@@ -10,20 +10,29 @@ package for .NET. I'm trying to use existing code as an excuse to learn about Ru
 
 ## parse
 
-The crate provides `TurkishId` type that represents a valid Turkish ID number. It can be instantiated from a string using the `parse()` method of `str` type. `TurkishId` type guarantess that it never contains an invalid Turkish ID number, so there's no need to validate a `TurkishId` once parsed. It can always be passed around safely.
+The crate provides `TurkishId` type that represents a valid Turkish ID number. 
+It can be instantiated from a string using the `parse()` method of `str` type. 
+`TurkishId` type guarantess that it never contains an invalid Turkish ID number, 
+so there's no need to validate a `TurkishId` once parsed. It can always be 
+passed around safely.
 
 ## is_valid
 
-You can just verify whether a string contains a valid Turkish ID or not by calling `is_valid(value: &str)` function.
+You can just verify whether a string contains a valid Turkish ID or not 
+by calling `is_valid(value: &str)` function.
 
 ## from_seq
 
-If you want to generate a Turkish ID from scratch, you can use `from_seq(seq: u32)` function.
+If you want to generate a Turkish ID from scratch, you can use 
+`from_seq(seq: u32)` function which adds the checksum fields to the given
+sequence number.
 
 # Internals
 
-The type occupies 11 bytes in memory and kept as ASCII representation of the number in order
-to make string display conversions fast. The other alternative would be to have it in a 40-bit number which would complicate the string representation.
+The type occupies 11 bytes in memory and kept as ASCII representation of 
+the number in order to keep string conversions fast. The other 
+alternative would be to have it in `u64` which would save 3 bytes but 
+complicate the string conversions.
 
 # Examples
 

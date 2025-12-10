@@ -37,19 +37,30 @@ use core::{
 
 pub const LENGTH: usize = 11;
 
-pub(crate) type Bytes = [u8; LENGTH];
-
 /// Turkish citizenship ID number. The number is stored as ASCII digits
 /// "0".."9" in the structure.
 #[derive(Debug, Eq, PartialEq, Hash, Copy, Clone)]
-pub struct TurkishId(Bytes);
+pub struct TurkishId {
+    id: [u8; LENGTH],
+}
 
 /// Represents the parser error for a given Turkish citizenship ID number.
 #[derive(Debug, Eq, PartialEq)]
 pub enum Error {
+    /// The length of the ID isn't {LENGTH}
     InvalidLength,
-    InvalidDigit,
-    InvalidChecksum,
+
+    /// There's an invalid character in the ID string
+    InvalidCharacter(char),
+
+    /// The final checksum mismatches
+    InvalidFinalChecksum,
+
+    /// The initial checksum mismatches
+    InvalidInitialChecksum,
+
+    /// ID's first digit is zero
+    FirstDigitIsZero,
 }
 
 /// Checks if the given string slice is a valid Turkish citizenship ID number.
@@ -81,25 +92,28 @@ pub fn is_valid(value: &str) -> bool {
 
 /// Internal function to validate a given Turkish ID number.
 fn validate(str: &str) -> Result<(), Error> {
-    /// Flattens and handles the error together
-    fn next_digit<T>(t: &mut impl Iterator<Item = Option<T>>) -> Result<T, Error> {
-        t.next().flatten().ok_or(Error::InvalidDigit)
+    /// Iterates over a char iterator and returns an i32 representing
+    /// the next digit, or returns an error if the digit can't be parsed.
+    fn next_digit(t: &mut impl Iterator<Item = char>) -> Result<i32, Error> {
+        let c = t.next().ok_or(Error::InvalidLength)?;
+
+        // convert digit to u32 value
+        c.to_digit(10)
+            .and_then(|d| i32::try_from(d).ok()) // u32 -> i32
+            .ok_or(Error::InvalidCharacter(c))
     }
 
     if str.len() != LENGTH {
         return Err(Error::InvalidLength);
     }
 
-    // get a digit iterator
-    let mut digits = str
-        .chars()
-        .map(|c| c.to_digit(10).and_then(|u| i32::try_from(u).ok()));
+    let mut digits = str.chars();
 
     // start calculating checksums
     let mut odd_sum = next_digit(&mut digits)?;
     if odd_sum == 0 {
         // the first digit cannot be zero
-        return Err(Error::InvalidDigit);
+        return Err(Error::FirstDigitIsZero);
     }
 
     let mut even_sum = 0;
@@ -115,14 +129,14 @@ fn validate(str: &str) -> Result<(), Error> {
     // cheaper.
     let final_checksum_computed = (odd_sum + even_sum + first_checksum) % 10;
     if final_checksum_computed != final_checksum {
-        return Err(Error::InvalidChecksum);
+        return Err(Error::InvalidFinalChecksum);
     }
 
     // we use euclidian remainder due to the possibility that the final
     // checksum wmight be negative.
     let first_checksum_computed = ((odd_sum * 7) - even_sum).rem_euclid(10);
     if first_checksum_computed != first_checksum {
-        return Err(Error::InvalidChecksum);
+        return Err(Error::InvalidInitialChecksum);
     }
 
     Ok(())
@@ -134,13 +148,15 @@ impl Display for TurkishId {
         write!(
             f,
             "{}",
-            str::from_utf8(&self.0).map_err(|_| core::fmt::Error)?
+            str::from_utf8(&self.id).map_err(|_| core::fmt::Error)?
         )
     }
 }
 
+/// Error that describes the result of from_seq()
 #[derive(Debug, Eq, PartialEq)]
 pub enum FromSeqError {
+    /// The sequence is out of the range of possible values
     OutOfRange,
 }
 
@@ -163,10 +179,10 @@ impl TurkishId {
         if !TurkishId::SEQ_RANGE.contains(&seq) {
             return Err(FromSeqError::OutOfRange);
         }
-        let mut d: Bytes = [0; LENGTH];
+        let mut d = [0; LENGTH];
         let mut odd_sum: i32 = 0;
         let mut even_sum: i32 = 0;
-        let mut divisor = TurkishId::SEQ_RANGE.start;
+        let mut divisor = Self::SEQ_RANGE.start;
         for (i, item) in d.iter_mut().enumerate().take(9) {
             let digit = (seq / divisor % 10) as i32;
             if i % 2 == 0 {
@@ -181,7 +197,7 @@ impl TurkishId {
         let second_checksum = (odd_sum + even_sum + first_checksum) % 10;
         d[9] = to_ascii(first_checksum);
         d[10] = to_ascii(second_checksum);
-        Ok(TurkishId(d))
+        Ok(TurkishId { id: d })
     }
 }
 
@@ -191,7 +207,8 @@ impl FromStr for TurkishId {
     type Err = Error;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         validate(s)?;
-        let result = Self(s.as_bytes().try_into().map_err(|_| Error::InvalidLength)?);
+        let bytes = s.as_bytes().try_into().map_err(|_| Error::InvalidLength)?;
+        let result = Self { id: bytes };
         Ok(result)
     }
 }

@@ -1,5 +1,21 @@
 # Changes
 
+## 6.0.0
+
+### Breaking changes
+
+- `Error::InvalidDigit` is now `Error::InvalidCharacter(c)` which contains
+  the character that's invalid.
+
+- Invalid checksum errors are now split into `Error::InvalidFinalChecksum`
+  and `Error::InvalidInitialChecksum`.
+
+- `is_valid` is now marked with `#[must_use]`.
+
+- The contents of TurkishId are now completely opaque to be able to keep the
+  possibility to change the internal storage structure in the future. 
+  To see its contents, use `to_string()` or a formatter.
+
 ## 5.0.0
 
 ### Breaking changes

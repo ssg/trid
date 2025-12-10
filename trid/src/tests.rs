@@ -18,24 +18,24 @@ const VALID_NUMBERS: &[&str] = &[
 ];
 
 const INVALID_NUMBERS: &[(&str, Error)] = &[
-    ("04948892948", Error::InvalidDigit),    // first digit zero
-    ("14948892946", Error::InvalidChecksum), // last checksum INVALID
-    ("14948892937", Error::InvalidChecksum), // first checksum INVALID
+    ("04948892948", Error::FirstDigitIsZero), // first digit zero
+    ("14948892946", Error::InvalidFinalChecksum), // last checksum INVALID
+    ("14948892937", Error::InvalidInitialChecksum), // first checksum INVALID
     // non numeric chars
-    ("A4948892948", Error::InvalidDigit),
-    ("7B558242278", Error::InvalidDigit),
-    ("80C76431508", Error::InvalidDigit),
-    ("767D5508630", Error::InvalidDigit),
-    ("9079E350894", Error::InvalidDigit),
-    ("43473F24496", Error::InvalidDigit),
-    ("566733G2584", Error::InvalidDigit),
-    ("2926080H600", Error::InvalidDigit),
-    ("93212606I04", Error::InvalidDigit),
-    ("352014085J8", Error::InvalidDigit),
-    ("3520140853K", Error::InvalidDigit),
+    ("A4948892948", Error::InvalidCharacter('A')),
+    ("7B558242278", Error::InvalidCharacter('B')),
+    ("80C76431508", Error::InvalidCharacter('C')),
+    ("767D5508630", Error::InvalidCharacter('D')),
+    ("9079E350894", Error::InvalidCharacter('E')),
+    ("43473F24496", Error::InvalidCharacter('F')),
+    ("566733G2584", Error::InvalidCharacter('G')),
+    ("2926080H600", Error::InvalidCharacter('H')),
+    ("93212606I04", Error::InvalidCharacter('I')),
+    ("352014085J8", Error::InvalidCharacter('J')),
+    ("3520140853K", Error::InvalidCharacter('K')),
     // spaces
-    (" 7655824227", Error::InvalidDigit),
-    ("5582422781 ", Error::InvalidDigit),
+    (" 7655824227", Error::InvalidCharacter(' ')),
+    ("5582422781 ", Error::InvalidCharacter(' ')),
     // uneven length
     ("", Error::InvalidLength),
     ("7", Error::InvalidLength),
