@@ -13,9 +13,9 @@ struct Args {
 fn main() {
     let args = Args::parse();
     let count = args.count;
-    let mut rng = rand::thread_rng();
+    let mut rng = rand::rng();
     for _ in 0..count {
-        let seq: u32 = rng.gen_range(TurkishId::SEQ_RANGE);
+        let seq: u32 = rng.random_range(TurkishId::SEQ_RANGE);
         println!("{}", TurkishId::from_seq(seq).unwrap());
     }
 }
