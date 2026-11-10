@@ -1,5 +1,13 @@
 # Changes
 
+## 6.0.1
+
+### Improvements
+
+- Removed signed arithmetic to avoid safety issues.
+- Updated dependencies.
+- Small documentation fixes.
+
 ## 6.0.0
 
 ### Breaking changes

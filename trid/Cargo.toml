@@ -1,23 +1,20 @@
 [package]
 edition = "2021"
 name = "trid"
-version = "6.0.0"
+version = "6.0.1"
 description = "Turkish citizenship ID number type"
 readme = "../README.md"
 homepage = "https://github.com/ssg/trid"
 repository = "https://github.com/ssg/trid"
 authors = ["Sedat Kapanoglu <sedat@kapanoglu.com>"]
 license = "Apache-2.0"
-keywords = ["turkish", "turkey", "id", "number"]
+keywords = ["turkish", "turkey", "turkiye", "id", "number"]
 categories = ["parser-implementations"]
 
 [lib]
 name = "trid"
 
 [lints.clippy]
-indexing_slicing = "deny"
-fallible_impl_from = "deny"
-wildcard_enum_match_arm = "deny"
-unneeded_field_pattern = "deny"
-fn_params_excessive_bools = "deny"
-must_use_candidate = "deny"
+cargo = "warn"
+pedantic = "warn"
+nursery = "warn"
