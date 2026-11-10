@@ -175,19 +175,20 @@ impl TurkishId {
     /// # Errors
     /// Will return `FromSeqError::OutOfRange` for out of range values.
     #[allow(clippy::cast_possible_truncation)]
-    pub fn from_seq(seq: u32) -> Result<TurkishId, FromSeqError> {
-        fn to_ascii(digit: i32) -> u8 {
+    pub fn from_seq(seq: u32) -> Result<Self, FromSeqError> {
+        const fn to_ascii(digit: u32) -> u8 {
+            assert!(digit < 10, "digit out of range");
             digit as u8 + b'0'
         }
-        if !TurkishId::SEQ_RANGE.contains(&seq) {
+        if !Self::SEQ_RANGE.contains(&seq) {
             return Err(FromSeqError::OutOfRange);
         }
         let mut d = [0; LENGTH];
-        let mut odd_sum: i32 = 0;
-        let mut even_sum: i32 = 0;
+        let mut odd_sum: u32 = 0;
+        let mut even_sum: u32 = 0;
         let mut divisor = Self::SEQ_RANGE.start;
         for (i, item) in d.iter_mut().enumerate().take(9) {
-            let digit = (seq / divisor % 10) as i32;
+            let digit = seq / divisor % 10;
             if i % 2 == 0 {
                 odd_sum += digit;
             } else {
@@ -196,11 +197,11 @@ impl TurkishId {
             *item = to_ascii(digit);
             divisor /= 10;
         }
-        let first_checksum = ((odd_sum * 7) - even_sum).rem_euclid(10);
+        let first_checksum = ((odd_sum % 10) * 7 + (even_sum % 10) * 9) % 10;
         let second_checksum = (odd_sum + even_sum + first_checksum) % 10;
         d[9] = to_ascii(first_checksum);
         d[10] = to_ascii(second_checksum);
-        Ok(TurkishId { id: d })
+        Ok(Self { id: d })
     }
 }
 
