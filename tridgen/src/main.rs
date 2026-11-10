@@ -1,6 +1,6 @@
 use clap::Parser;
-use rand::Rng;
 use trid::TurkishId;
+use rand::prelude::*;
 
 #[derive(Parser, Debug)]
 #[command(author, version, about)]
