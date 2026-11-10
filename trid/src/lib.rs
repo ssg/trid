@@ -142,7 +142,7 @@ fn validate(str: &str) -> Result<(), Error> {
     Ok(())
 }
 
-/// TurkishId types are displayed as regular numbers.
+/// `TurkishId` types are displayed as regular numbers.
 impl Display for TurkishId {
     fn fmt(&self, f: &mut Formatter) -> Result<(), core::fmt::Error> {
         write!(
@@ -153,7 +153,7 @@ impl Display for TurkishId {
     }
 }
 
-/// Error that describes the result of from_seq()
+/// Error that describes the result of `from_seq()`
 #[derive(Debug, Eq, PartialEq)]
 pub enum FromSeqError {
     /// The sequence is out of the range of possible values
@@ -163,15 +163,18 @@ pub enum FromSeqError {
 impl TurkishId {
     pub const SEQ_RANGE: Range<u32> = 100_000_000..1_000_000_000;
 
-    /// Generate a valid TurkishId from a sequence number by calculating
+    /// Generate a valid `TurkishId` from a sequence number by calculating
     /// checksums and building the buffer for it.
     ///
     /// # Arguments
     /// - seq - A number between 100,000,000 and 999,999,999
     ///
     /// # Returns
-    /// A Result with `TurkishId` if the values are in range, otherwise
-    /// `FromSeqError`
+    /// A Result with `TurkishId` if the values are in range.
+    /// 
+    /// # Errors
+    /// Will return `FromSeqError::OutOfRange` for out of range values.
+    #[allow(clippy::cast_possible_truncation)]
     pub fn from_seq(seq: u32) -> Result<TurkishId, FromSeqError> {
         fn to_ascii(digit: i32) -> u8 {
             digit as u8 + b'0'
@@ -201,7 +204,7 @@ impl TurkishId {
     }
 }
 
-/// TurkishId can only be constructed from a string despite that it's stored
+/// `TurkishId` can only be constructed from a string despite that it's stored
 /// as a fixed-length byte array internally.
 impl FromStr for TurkishId {
     type Err = Error;
